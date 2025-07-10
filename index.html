@@ -27,7 +27,6 @@
         }
     </script>
     <style>
-    <style>
         html { scroll-behavior: smooth;
         }
          body {
@@ -753,7 +752,7 @@
             
             <!-- Download CV Button -->
             <div class="mt-12 text-center">
-                <a href="javascript:void(0)" onclick="downloadCV('cv.pdf')" class="btn-accent px-8 py-3 rounded-md font-medium inline-flex items-center shadow-md">
+                <a href="javascript:void(0)" onclick="downloadCV()" class="btn-accent px-8 py-3 rounded-md font-medium inline-flex items-center shadow-md">
                     <i class="fas fa-download mr-2"></i> Download CV
                 </a>
             </div>
@@ -1146,55 +1145,29 @@
         });
     });
     
-    // Contact Form dengan FormSubmit.co
+    // Contact Form
     const contactForm = document.getElementById('contact-form');
     
-    contactForm.addEventListener('submit', async (e) => {
+    contactForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const formData = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            message: document.getElementById('message').value,
-            _subject: 'Pesan dari Portfolio Hartini Damanik',
-            _template: 'box'
-        };
-
-        try {
-            const response = await fetch('https://formsubmit.co/ajax/hartinidamanik12@gmail.com', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            
-            const result = await response.json();
-            if (result.success) {
-                alert('Terima kasih! Pesan Anda telah berhasil dikirim.');
-                contactForm.reset();
-            } else {
-                alert('Maaf, terjadi kesalahan saat mengirim pesan. Silakan coba lagi.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan jaringan. Silakan coba lagi nanti.');
-        }
+        // Get form values
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
+        
+        // In a real application, you would send this data to a server
+        // For this demo, we'll just show an alert
+        alert(`Terima kasih ${name}! Pesan Anda telah diterima. Kami akan menghubungi Anda melalui ${email} segera.`);
+        
+        // Reset form
+        contactForm.reset();
     });
     
     // Image Modal
-    const imageModal = document.createElement('div');
-    imageModal.id = 'imageModal';
-    imageModal.className = 'modal';
-    imageModal.innerHTML = `
-        <span class="close">&times;</span>
-        <img class="modal-content" id="expandedImg">
-    `;
-    document.body.appendChild(imageModal);
-    
+    const imageModal = document.getElementById('imageModal');
     const modalImg = document.getElementById('expandedImg');
-    const closeImageBtn = document.querySelector('#imageModal .close');
+    const closeImageBtn = document.getElementsByClassName('close')[0];
     
     // Function to expand image
     function expandImage(imgSrc) {
@@ -1217,7 +1190,7 @@
     // PDF Modal
     const pdfModal = document.getElementById('pdfModal');
     const pdfFrame = document.getElementById('pdfFrame');
-    const closePdfBtn = document.querySelector('#pdfModal .close');
+    const closePdfBtn = document.getElementsByClassName('close')[1];
     
     // Function to open PDF
     function openPdf(pdfSrc) {
@@ -1237,18 +1210,105 @@
         }
     }
     
-    // Function to download CV (versi sederhana)
+    // Function to download CV
     function downloadCV() {
-        // Pastikan file CV sudah ada di server dengan nama 'cv.pdf'
-        const cvUrl = 'cv.pdf';
+        // Create a sample PDF using jsPDF
+        const { jsPDF } = window.jspdf;
         
-        // Buat elemen anchor untuk download
-        const link = document.createElement('a');
-        link.href = cvUrl;
-        link.download = 'CV_Hartini_Damanik.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Check if jsPDF is loaded
+        if (typeof jsPDF === 'undefined') {
+            // If jsPDF is not loaded, load it dynamically
+            const script = document.createElement('script');
+            script.src = 'cv.png';
+            script.onload = function() {
+                // Once loaded, call the function again
+                downloadCV();
+            };
+            document.head.appendChild(script);
+            return;
+        }
+        
+        // Create PDF
+        const doc = new jsPDF();
+        
+        // Add content to PDF
+        doc.setFontSize(22);
+        doc.setFont("helvetica", "bold");
+        doc.text("HARTINI DAMANIK", 105, 20, { align: "center" });
+        
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text("Sistem Informasi", 105, 30, { align: "center" });
+        
+        doc.setFontSize(10);
+        doc.text("Email: hartinidamanik12@gmail.com | Telepon: 083191135622", 105, 40, { align: "center" });
+        doc.text("Dolok Maraja, Kec. Tapian Dolok, Kabupaten Simalungun, Sumatera Utara 21154", 105, 45, { align: "center" });
+        
+        // Add line
+        doc.setLineWidth(0.5);
+        doc.line(20, 50, 190, 50);
+        
+        // Profile
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("PROFIL", 20, 60);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("Mahasiswi jurusan Sistem Informasi dengan pengalaman mengikuti program nasional seperti", 20, 70);
+        doc.text("Kampus Mengajar dan MSIB mitra Bangkit Academy dengan predikat Distinction Graduate.", 20, 75);
+        
+        // Education
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("PENDIDIKAN", 20, 90);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("STIKOM Tunas Bangsa Pematangsiantar", 20, 100);
+        doc.setFont("helvetica", "normal");
+        doc.text("Sistem Informasi | 2022 - Sekarang", 20, 105);
+        
+        doc.setFont("helvetica", "bold");
+        doc.text("SMKN 3 Pematangsiantar", 20, 115);
+        doc.setFont("helvetica", "normal");
+        doc.text("Rekayasa Perangkat Lunak | 2019 - 2022", 20, 120);
+        
+        // Experience
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("PENGALAMAN", 20, 135);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("Bangkit Academy 2024", 20, 145);
+        doc.setFont("helvetica", "normal");
+        doc.text("Cloud Computing Learning Path | Sep - Des 2024", 20, 150);
+        doc.text("Lulus dengan predikat Distinction Graduate", 20, 155);
+        
+        doc.setFont("helvetica", "bold");
+        doc.text("Kampus Mengajar Angkatan 7", 20, 165);
+        doc.setFont("helvetica", "normal");
+        doc.text("SD Negeri 091262 Karang Sari | Mar - Jun 2024", 20, 170);
+        
+        // Skills
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("KEMAMPUAN", 20, 185);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("Microsoft Office (Word, Excel, PowerPoint), CorelDRAW, MySQL", 20, 195);
+        doc.text("Pemrograman Dasar: C++, Python, JavaScript, HTML, PHP", 20, 200);
+        
+        // Save the PDF
+        doc.save("CV_Hartini_Damanik.pdf");
     }
+    
+    // Load jsPDF for CV download functionality
+    (function loadJsPDF() {
+        const script = document.createElement('script');
+        script.src = 'cv.pdf';
+        document.head.appendChild(script);
+    })();
 </script>
-</html>
