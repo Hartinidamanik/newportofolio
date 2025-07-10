@@ -1211,22 +1211,18 @@
     }
     
     // Function to download CV
-    function downloadCV() {
-        // Create a sample PDF using jsPDF
-        const { jsPDF } = window.jspdf;
-        
-        // Check if jsPDF is loaded
-        if (typeof jsPDF === 'undefined') {
-            // If jsPDF is not loaded, load it dynamically
-            const script = document.createElement('script');
-            script.src = 'cv.png';
-            script.onload = function() {
-                // Once loaded, call the function again
-                downloadCV();
-            };
-            document.head.appendChild(script);
-            return;
-        }
+   function downloadCV() {
+    // Pastikan file CV sudah ada di folder yang sama
+    const cvUrl = 'cv.pdf'; // atau 'cv.png' sesuai file Anda
+    
+    // Buat elemen anchor untuk download
+    const link = document.createElement('a');
+    link.href = cvUrl;
+    link.download = 'CV_Hartini_Damanik.pdf'; // Nama file saat diunduh
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
         
         // Create PDF
         const doc = new jsPDF();
